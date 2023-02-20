@@ -360,7 +360,7 @@ export default {
             loaded: 'Loaded:'
           },
           processing: 'Processing',
-          tableSetting: 'Table Setting',
+          tableSetting: 'Table Setting New Name 2',
           exportExcel: 'Export Excel',
           importExcel: 'Import Excel',
           back: 'Back',
@@ -540,6 +540,10 @@ export default {
           const setting = this.getSetting()
           if (this.remember) localStorage[window.location.pathname + '.' + this.token] = JSON.stringify(setting)
           this.$emit('setting', setting)
+          // Empty this.columnFilter proxy object
+          Object.keys(this.columnFilter).forEach((key) => {
+            delete this.columnFilter[key]
+          })
         })
       },
       deep: true
@@ -558,7 +562,15 @@ export default {
     },
     pageSize (newVal) {
       this.$emit('page-changed', this.pageTop, this.pageTop + newVal - 1)
-    }
+    },
+    columnFilter: {
+      handler(newVal) {
+        const filter = {}
+        for (let p in newVal) filter[this.fields[p].name] = newVal[p]
+        this.$emit('filter-changed', filter)
+      },
+      deep: true
+    },
   },
   beforeUnmount () {
     window.removeEventListener('resize', this.winResize)
@@ -1082,12 +1094,12 @@ export default {
           break
         case 'datetimesec':
           this.inputBox.value = new Date(new Date(this.inputDateTime) - offset).toISOString().replace('T', ' ').slice(0, 19)
-          this.inputBox.value = m.format('YYYY-MM-DD hh:mn:ss')
+          // this.inputBox.value = m.format('YYYY-MM-DD hh:mn:ss')
           break
         case 'datetick':
         case 'datetimetick':
         case 'datetimesectick':
-          this.inputBox.value = m.valueOf()
+          // this.inputBox.value = m.valueOf()
           break
       }
       this.inputBoxShow = 0
@@ -1661,9 +1673,9 @@ export default {
                 return String(a[name]).localeCompare(String(b[name]))
               }
         }
-        this.modelValue.sort((a, b) => {
-          return sorting(a, b) * -n
-        })
+        // this.modelValue.sort((a, b) => {
+        //   return sorting(a, b) * -n
+        // })
         this.sortPos = colPos
         this.sortDir = n
         this.refresh()
@@ -2468,7 +2480,7 @@ export default {
         const field = this.fields.find(f => f.name === name)
         if (field) this.updateCell(rec, field, rec[name], isUndo)
       })
-      // this.refresh()
+    // this.refresh()
       if (!noLastPage) this.lazy(() => {
         this.lastPage()
         this.moveToSouthWest()
@@ -2485,7 +2497,7 @@ export default {
     },
     deleteRecord (valueRowPos, isUndo) {
       if (this.currentRowPos === valueRowPos) this.moveNorth()
-      const rec = this.modelValue.splice(valueRowPos, 1)[0]
+      const rec = this.modelValue[valueRowPos]
       setTimeout(() => {
         this.lazy(rec, (buf) => {
           this.$emit('delete', buf)
@@ -2560,7 +2572,7 @@ export default {
           this.calSummary(field.name)
 
         this.lazy(transaction, (buf) => {
-          this.$emit('update', buf)
+          this.$emit('update', row)
           if (!isUndo) this.redo.push(buf)
         }, 50)
       })
