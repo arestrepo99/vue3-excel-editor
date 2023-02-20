@@ -2473,7 +2473,7 @@ export default {
       })
       const id = rec.$id || this.tempKey()
       rec.$id = id
-      this.modelValue.push(rec)
+      // this.modelValue.push(rec)
       const rowPos = this.table.push(rec) - 1
       if (selectAfterDone) this.selected[rowPos] = id
       Object.keys(rec).forEach(name => {
