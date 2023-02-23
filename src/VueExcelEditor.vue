@@ -92,10 +92,10 @@
             <tr v-if="localizedLabel.noRecordIndicator && pagingTable.length == 0">
               <td colspan="100%" style="height:40px; vertical-align: middle; text-align: center"></td>
             </tr>
+            <!--  :class="{select: typeof selected[pageTop + rowPos] !== 'undefined'}" -->
             <tr v-else
                 v-for="(record, rowPos) in pagingTable"
                 :key="rowPos"
-                :class="{select: typeof selected[pageTop + rowPos] !== 'undefined'}"
                 :style="rowStyle(record)">
               <td class="center-text first-col"
                   :id="`rid-${record.$id}`"
@@ -1582,6 +1582,7 @@ export default {
       const setting = this.getSetting()
       if (this.remember) localStorage[window.location.pathname + '.' + this.token] = JSON.stringify(setting)
       this.$emit('setting', setting)
+      this.fields.forEach((f, i) => {f.width = setting.fields[i].width})
     },
 
     /* *** Finder *******************************************************************************************
@@ -1673,7 +1674,8 @@ export default {
                 return String(a[name]).localeCompare(String(b[name]))
               }
         }
-        // this.modelValue.sort((a, b) => {
+        this.$emit('sort', sorting, n)
+        // this.table.sort((a, b) => {
         //   return sorting(a, b) * -n
         // })
         this.sortPos = colPos
@@ -2078,6 +2080,9 @@ export default {
           this.recordBody.children[rowPos - this.pageTop].classList.add('select')
         this.lazy(rowPos, (buf) => {
           this.$emit('select', buf, true)
+            // Create object with all selected. 
+          const selectedRows = Object.keys(this.selected).map(k => this.table[k])
+          this.$emit('delete-selection', selectedRows)
         })
       }
     },
@@ -2095,11 +2100,14 @@ export default {
         delete this.selected[rowPos]
         this.selectedCount--
         if (this.recordBody.children[rowPos - this.pageTop])
+          console.log("NVEVER EVEN COMES HERE WTF")
           this.recordBody.children[rowPos - this.pageTop].classList.remove('select')
         this.lazy(rowPos, (buf) => {
           this.$emit('select', buf, false)
         })
       }
+      const selectedRows = Object.keys(this.selected).map(k => this.table[k])
+      this.$emit('delete-selection', selectedRows)
     },
     toggleSelectAllRecords (e) {
       if (e) e.preventDefault()
@@ -2118,6 +2126,8 @@ export default {
         this.$emit('select', Object.keys(this.selected).map(rowPos => Number(rowPos)), false)
       this.selected = {}
       this.selectedCount = 0
+      const selectedRows = Object.keys(this.selected).map(k => this.table[k])
+      this.$emit('delete-selection', selectedRows)
     },
 
     /* *** Cursor *******************************************************************************************
@@ -2887,9 +2897,9 @@ input:focus, input:active:focus, input.active:focus {
   background-color: white;
   text-align: left;
 }
-.systable tr.select td {
+/* .systable tr.select td {
   background-color: #bbb !important;
-}
+} */
 .systable th, .systable td {
   vertical-align: bottom;
   padding: 0.2rem 0.3rem;
