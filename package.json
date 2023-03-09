@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cscan/vue3-excel-editor.git"
+    "url": "git+https://kiplan@dev.azure.com/kiplan/PlanningSolutions/_git/excel-editor"
   },
   "keywords": [
     "vue",
@@ -41,10 +41,6 @@
     "navigatable",
     "contenteditable"
   ],
-  "author": "Kenneth Cheng",
+  "author": "Agustin Restrepo",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/cscan/vue3-excel-editor/issues"
-  },
-  "homepage": "https://github.com/cscan/vue3-excel-editor"
 }
