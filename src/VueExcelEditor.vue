@@ -542,9 +542,9 @@ export default {
           if (this.remember) localStorage[window.location.pathname + '.' + this.token] = JSON.stringify(setting)
           this.$emit('setting', setting)
           // Empty this.columnFilter proxy object
-          Object.keys(this.columnFilter).forEach((key) => {
-            delete this.columnFilter[key]
-          })
+          // Object.keys(this.columnFilter).forEach((key) => {
+          //   delete this.columnFilter[key]
+          // })
         })
       },
       deep: true
