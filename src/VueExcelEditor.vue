@@ -97,7 +97,12 @@
             <tr v-else
                 v-for="(record, rowPos) in pagingTable"
                 :key="rowPos"
-                :style="rowStyle(record)">
+                :style="rowStyle(record)"
+                :class="{
+                  save: modelValue[pageTop + rowPos] ? modelValue[pageTop + rowPos]._update : false,
+                  delete: modelValue[pageTop + rowPos] ? modelValue[pageTop + rowPos]._delete : false,
+                  selected: modelValue[pageTop + rowPos] ? modelValue[pageTop + rowPos]._selected : false,
+                }">
               <td class="center-text first-col"
                   :id="`rid-${record.$id}`"
                   :class="{
@@ -816,11 +821,11 @@ export default {
           }
         })
         this.filteredValue = this.modelValue.filter(record => this.recordFilter(record))
+        
         if (filterColumnList.length === 0)
           this.table = this.filteredValue
         else {
           this.table = this.filteredValue.filter((record) => {
-
             // Record is created after the filter time
             if (record.$id > this.lastFilterTime) return true
 
@@ -831,10 +836,13 @@ export default {
             }).length > 0
             if (isNew) return true // Always show new record in filter mode
             */
-
+            
             const content = {}
             filterColumnList.forEach((k) => {
-              const val = record[this.fields[k].name]
+              let val = record[this.fields[k].name]
+              if (this.fields[k].options) {
+                val = this.fields[k].options[val]
+              }
               if (this.fields[k].type === 'number' && filter[k].type <= 4)
                 content[k] = val
               else
