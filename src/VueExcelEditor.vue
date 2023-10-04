@@ -111,7 +111,9 @@
                   }"
                   :pos="rowPos"
                   @mouseover="numcolMouseOver"
-                  @click="rowLabelClick">
+                  @click="rowLabelClick"
+                  @contextmenu.prevent="$emit('row-contextmenu',record)"
+                  >
                 <span v-html="recordLabel(pageTop + rowPos + 1, record)"></span>
               </td>
               <td v-for="(item, p) in fields"
