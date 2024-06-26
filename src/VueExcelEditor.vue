@@ -102,6 +102,7 @@
                   save: modelValue[pageTop + rowPos] ? modelValue[pageTop + rowPos]._update : false,
                   delete: modelValue[pageTop + rowPos] ? modelValue[pageTop + rowPos]._delete : false,
                   selected: modelValue[pageTop + rowPos] ? modelValue[pageTop + rowPos]._selected : false,
+                  create: modelValue[pageTop + rowPos] ? modelValue[pageTop + rowPos]._create : false,
                 }">
               <td class="center-text first-col"
                   :id="`rid-${record.$id}`"
